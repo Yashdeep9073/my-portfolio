@@ -1,38 +1,8 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
+import { PORTFOLIO_DATA } from "@/constants";
 
-const categories = [
-  {
-    title: "Frontend",
-    items: ["HTML", "CSS", "JavaScript", "TypeScript"],
-    color: "text-neon-cyan",
-  },
-  {
-    title: "Backend",
-    items: ["Node.js", "Laravel"],
-    color: "text-neon-blue",
-  },
-  {
-    title: "Database",
-    items: ["PostgreSQL", "MySQL", "Redis", "Prisma ORM"],
-    color: "text-neon-purple",
-  },
-  {
-    title: "Infrastructure",
-    items: ["AWS", "Docker", "Linux", "KVM"],
-    color: "text-neon-cyan",
-  },
-  {
-    title: "Architecture",
-    items: ["Kafka", "BullMQ", "Pub/Sub", "Workers"],
-    color: "text-neon-blue",
-  },
-  {
-    title: "DevOps",
-    items: ["DNS", "CI/CD", "Security", "Scaling"],
-    color: "text-neon-purple",
-  },
-];
+const categories = PORTFOLIO_DATA.techStack.categories;
 
 const TechStackSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -60,8 +30,8 @@ const TechStackSection = () => {
   return (
     <section id="stack" ref={ref} className="section-padding max-w-6xl mx-auto">
       <h2 className="font-display text-3xl md:text-5xl font-bold mb-2">
-        <span className="text-primary font-mono text-lg block mb-3">02.</span>
-        Tech Stack
+        <span className="text-primary font-mono text-lg block mb-3">{PORTFOLIO_DATA.techStack.sectionNumber}</span>
+        {PORTFOLIO_DATA.techStack.title}
       </h2>
       <div className="w-20 h-0.5 bg-primary/50 mb-12" />
 

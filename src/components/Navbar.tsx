@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
+import { PORTFOLIO_DATA } from "@/constants";
 
-const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Stack", href: "#stack" },
-  { label: "Projects", href: "#projects" },
-  { label: "Stats", href: "#stats" },
-  { label: "Contact", href: "#contact" },
-];
+const navLinks = PORTFOLIO_DATA.navigation;
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -49,7 +44,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between px-6">
         <a href="#" className="font-mono text-lg font-bold text-primary text-glow">
-          {"<dev />"}
+          {PORTFOLIO_DATA.brand.logoText}
         </a>
 
         {/* Desktop */}

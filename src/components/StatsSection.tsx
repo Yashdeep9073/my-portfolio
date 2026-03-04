@@ -1,13 +1,8 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { PORTFOLIO_DATA } from "@/constants";
 
-const stats = [
-  { label: "Years Experience", value: 8, suffix: "+" },
-  { label: "Projects Completed", value: 50, suffix: "+" },
-  { label: "Systems Deployed", value: 30, suffix: "+" },
-  { label: "APIs Built", value: 120, suffix: "+" },
-  { label: "Queue Workers Running", value: 200, suffix: "+" },
-];
+const stats = PORTFOLIO_DATA.stats.items;
 
 const StatsSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -61,8 +56,8 @@ const StatsSection = () => {
   return (
     <section id="stats" ref={ref} className="section-padding max-w-6xl mx-auto">
       <h2 className="font-display text-3xl md:text-5xl font-bold mb-2">
-        <span className="text-primary font-mono text-lg block mb-3">04.</span>
-        By the Numbers
+        <span className="text-primary font-mono text-lg block mb-3">{PORTFOLIO_DATA.stats.sectionNumber}</span>
+        {PORTFOLIO_DATA.stats.title}
       </h2>
       <div className="w-20 h-0.5 bg-primary/50 mb-12" />
 

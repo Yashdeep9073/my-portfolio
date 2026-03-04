@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { Github, Linkedin, Mail, Send } from "lucide-react";
+import { PORTFOLIO_DATA } from "@/constants";
+import { useToast } from "@/components/ui/use-toast";
+import { contactFormSchema, type ContactFormValues } from "@/schema/form.sceham";
+
+const contactLinks = PORTFOLIO_DATA.contact.socialLinks;
 
 const ContactSection = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const { toast } = useToast();
+  const [form, setForm] = useState<ContactFormValues>({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormValues, string>>>({});
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -25,9 +32,44 @@ const ContactSection = () => {
     return () => ctx.revert();
   }, []);
 
+  const handleFieldChange = (field: keyof ContactFormValues, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => {
+      if (!prev[field]) {
+        return prev;
+      }
+
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+    const result = contactFormSchema.safeParse(form);
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setErrors({
+        name: fieldErrors.name?.[0],
+        email: fieldErrors.email?.[0],
+        message: fieldErrors.message?.[0],
+      });
+
+      toast({
+        variant: "destructive",
+        title: "Invalid form",
+        description: "Please fix the highlighted fields and try again.",
+      });
+      return;
+    }
+
+    setErrors({});
+    toast({
+      title: "Message ready",
+      description: "Client-side validation passed successfully.",
+    });
     setForm({ name: "", email: "", message: "" });
   };
 
@@ -35,12 +77,12 @@ const ContactSection = () => {
     <section id="contact" ref={ref} className="section-padding max-w-4xl mx-auto">
       <div className="contact-content">
         <h2 className="font-display text-3xl md:text-5xl font-bold mb-2">
-          <span className="text-primary font-mono text-lg block mb-3">05.</span>
-          Get in Touch
+          <span className="text-primary font-mono text-lg block mb-3">{PORTFOLIO_DATA.contact.sectionNumber}</span>
+          {PORTFOLIO_DATA.contact.title}
         </h2>
         <div className="w-20 h-0.5 bg-primary/50 mb-8" />
         <p className="text-muted-foreground mb-12 max-w-lg">
-          Have a project in mind or want to discuss scalable systems? Drop me a message.
+          {PORTFOLIO_DATA.contact.description}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
@@ -50,33 +92,51 @@ const ContactSection = () => {
                 type="text"
                 placeholder="Name"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                required
+                onChange={(e) => handleFieldChange("name", e.target.value)}
+                
                 maxLength={100}
-                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                aria-invalid={Boolean(errors.name)}
+                className={`w-full px-4 py-3 rounded-lg bg-secondary border font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 transition-all ${
+                  errors.name
+                    ? "border-destructive/80 focus:border-destructive/80 focus:ring-destructive/30"
+                    : "border-border focus:border-primary/50 focus:ring-primary/20"
+                }`}
               />
+              {errors.name ? <p className="mt-2 text-xs text-destructive font-mono">{errors.name}</p> : null}
             </div>
             <div>
               <input
                 type="email"
                 placeholder="Email"
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                required
+                onChange={(e) => handleFieldChange("email", e.target.value)}
+                
                 maxLength={255}
-                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                aria-invalid={Boolean(errors.email)}
+                className={`w-full px-4 py-3 rounded-lg bg-secondary border font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 transition-all ${
+                  errors.email
+                    ? "border-destructive/80 focus:border-destructive/80 focus:ring-destructive/30"
+                    : "border-border focus:border-primary/50 focus:ring-primary/20"
+                }`}
               />
+              {errors.email ? <p className="mt-2 text-xs text-destructive font-mono">{errors.email}</p> : null}
             </div>
             <div>
               <textarea
                 placeholder="Message"
                 rows={5}
                 value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                required
+                onChange={(e) => handleFieldChange("message", e.target.value)}
+                
                 maxLength={1000}
-                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+                aria-invalid={Boolean(errors.message)}
+                className={`w-full px-4 py-3 rounded-lg bg-secondary border font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 transition-all resize-none ${
+                  errors.message
+                    ? "border-destructive/80 focus:border-destructive/80 focus:ring-destructive/30"
+                    : "border-border focus:border-primary/50 focus:ring-primary/20"
+                }`}
               />
+              {errors.message ? <p className="mt-2 text-xs text-destructive font-mono">{errors.message}</p> : null}
             </div>
             <button
               type="submit"
@@ -88,26 +148,26 @@ const ContactSection = () => {
 
           <div className="md:col-span-2 flex flex-col justify-center gap-5">
             <a
-              href="https://github.com/Yashdeep9073"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={contactLinks[0].href}
+              target={contactLinks[0].external ? "_blank" : undefined}
+              rel={contactLinks[0].external ? "noopener noreferrer" : undefined}
               className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors font-mono text-sm"
             >
-              <Github className="w-5 h-5" /> GitHub
+              <Github className="w-5 h-5" /> {contactLinks[0].label}
             </a>
             <a
-              href="https://www.linkedin.com/in/yash-deep-22aa41238"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={contactLinks[1].href}
+              target={contactLinks[1].external ? "_blank" : undefined}
+              rel={contactLinks[1].external ? "noopener noreferrer" : undefined}
               className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors font-mono text-sm"
             >
-              <Linkedin className="w-5 h-5" /> LinkedIn
+              <Linkedin className="w-5 h-5" /> {contactLinks[1].label}
             </a>
             <a
-              href="mailto:ydeep9073@gmail.com"
+              href={contactLinks[2].href}
               className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors font-mono text-sm"
             >
-              <Mail className="w-5 h-5" /> ydeep9073@gmail.com
+              <Mail className="w-5 h-5" /> {contactLinks[2].label}
             </a>
           </div>
         </div>

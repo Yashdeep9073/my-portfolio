@@ -1,37 +1,9 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { ExternalLink, Github } from "lucide-react";
+import { PORTFOLIO_DATA } from "@/constants";
 
-const projects = [
-  {
-    title: "Distributed Task Engine",
-    description: "High-throughput job processing system using Kafka and BullMQ, handling 50k+ jobs/minute with dead-letter queues and retry logic.",
-    stack: ["Node.js", "Kafka", "BullMQ", "Redis", "Docker"],
-    github: "#",
-    live: "#",
-  },
-  {
-    title: "Cloud Deployment Platform",
-    description: "Automated CI/CD pipeline with Docker orchestration, zero-downtime deployments, and infrastructure-as-code on AWS.",
-    stack: ["AWS", "Docker", "Linux", "PostgreSQL", "TypeScript"],
-    github: "#",
-    live: "#",
-  },
-  {
-    title: "Real-Time Analytics API",
-    description: "Event-driven analytics service processing millions of events via Pub/Sub architecture with sub-second query latency.",
-    stack: ["Node.js", "Redis", "PostgreSQL", "Pub/Sub", "Prisma"],
-    github: "#",
-    live: "#",
-  },
-  {
-    title: "Multi-Tenant SaaS Backend",
-    description: "Scalable multi-tenant API with row-level security, tenant isolation, rate limiting, and automated provisioning.",
-    stack: ["Laravel", "MySQL", "Redis", "AWS", "Docker"],
-    github: "#",
-    live: "#",
-  },
-];
+const projects = PORTFOLIO_DATA.projects.items;
 
 const ProjectsSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -59,8 +31,8 @@ const ProjectsSection = () => {
   return (
     <section id="projects" ref={ref} className="section-padding max-w-6xl mx-auto">
       <h2 className="font-display text-3xl md:text-5xl font-bold mb-2">
-        <span className="text-primary font-mono text-lg block mb-3">03.</span>
-        Projects
+        <span className="text-primary font-mono text-lg block mb-3">{PORTFOLIO_DATA.projects.sectionNumber}</span>
+        {PORTFOLIO_DATA.projects.title}
       </h2>
       <div className="w-20 h-0.5 bg-primary/50 mb-12" />
 

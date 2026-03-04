@@ -1,12 +1,8 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
+import { PORTFOLIO_DATA } from "@/constants";
 
-const highlights = [
-  { label: "Scalable Systems", desc: "Designed for millions of requests" },
-  { label: "Distributed Queues", desc: "Kafka, BullMQ, Pub/Sub workers" },
-  { label: "Cloud Infrastructure", desc: "AWS, Docker, Linux, KVM" },
-  { label: "Full Stack Delivery", desc: "Frontend to production deploy" },
-];
+const highlights = PORTFOLIO_DATA.about.highlights;
 
 const AboutSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -49,15 +45,12 @@ const AboutSection = () => {
     <section id="about" ref={ref} className="section-padding max-w-6xl mx-auto">
       <div className="about-text mb-16">
         <h2 className="font-display text-3xl md:text-5xl font-bold mb-2">
-          <span className="text-primary font-mono text-lg block mb-3">01.</span>
-          About Me
+          <span className="text-primary font-mono text-lg block mb-3">{PORTFOLIO_DATA.about.sectionNumber}</span>
+          {PORTFOLIO_DATA.about.title}
         </h2>
         <div className="w-20 h-0.5 bg-primary/50 mb-8" />
         <p className="text-muted-foreground text-lg max-w-3xl leading-relaxed">
-          I'm a backend-heavy full stack developer who thrives on building systems that scale.
-          From designing distributed queue architectures and microservices to deploying
-          containerized applications on cloud infrastructure — I engineer solutions that
-          handle real-world load with reliability and performance at their core.
+          {PORTFOLIO_DATA.about.description}
         </p>
       </div>
 

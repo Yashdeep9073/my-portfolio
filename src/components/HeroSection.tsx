@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
+import { PORTFOLIO_DATA } from "@/constants";
 
 const HeroScene = lazy(() => import("./HeroScene"));
 
@@ -62,30 +63,30 @@ const HeroSection = () => {
 
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         <div className="hero-terminal inline-block mb-6 px-4 py-2 rounded-full border border-primary/20 bg-secondary/50 backdrop-blur-sm">
-          <span className="font-mono text-sm text-primary">~/portfolio</span>
-          <span className="font-mono text-sm text-muted-foreground"> $ whoami</span>
+          <span className="font-mono text-sm text-primary">{PORTFOLIO_DATA.brand.terminalPath}</span>
+          <span className="font-mono text-sm text-muted-foreground"> {PORTFOLIO_DATA.brand.terminalCommand}</span>
         </div>
 
         <h1 className="hero-title font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
-          <span className="gradient-text">Yashdeep</span>
+          <span className="gradient-text">{PORTFOLIO_DATA.brand.name}</span>
         </h1>
 
         <p className="hero-subtitle font-mono text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-          Full Stack Engineer • Distributed Systems • Scalable Architecture
+          {PORTFOLIO_DATA.brand.roleSummary}
         </p>
 
         <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="#projects"
+            href={PORTFOLIO_DATA.hero.primaryAction.href}
             className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-mono text-sm font-semibold transition-all duration-200 hover:shadow-[0_0_25px_hsl(170_100%_50%/0.4)] hover:scale-105"
           >
-            View Projects
+            {PORTFOLIO_DATA.hero.primaryAction.label}
           </a>
           <a
-            href="#contact"
+            href={PORTFOLIO_DATA.hero.secondaryAction.href}
             className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg border border-primary/30 text-primary font-mono text-sm font-semibold transition-all duration-200 hover:bg-primary/10 hover:border-primary/60"
           >
-            Contact
+            {PORTFOLIO_DATA.hero.secondaryAction.label}
           </a>
         </div>
       </div>
