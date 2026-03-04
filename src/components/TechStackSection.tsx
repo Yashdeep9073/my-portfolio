@@ -1,8 +1,5 @@
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap } from "@/lib/gsap";
 
 const categories = [
   {
@@ -42,10 +39,20 @@ const TechStackSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".stack-category", {
-        scrollTrigger: { trigger: ref.current, start: "top 75%" },
-        y: 50, opacity: 0, duration: 0.6, stagger: 0.1, ease: "power3.out",
-      });
+      gsap.fromTo(
+        ".stack-category",
+        { y: 50, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+          immediateRender: false,
+          scrollTrigger: { trigger: ref.current, start: "top 75%", once: true, invalidateOnRefresh: true },
+        },
+      );
     }, ref);
     return () => ctx.revert();
   }, []);

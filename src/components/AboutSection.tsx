@@ -1,8 +1,5 @@
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap } from "@/lib/gsap";
 
 const highlights = [
   { label: "Scalable Systems", desc: "Designed for millions of requests" },
@@ -16,14 +13,34 @@ const AboutSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".about-text", {
-        scrollTrigger: { trigger: ".about-text", start: "top 80%" },
-        y: 40, opacity: 0, duration: 0.8, ease: "power3.out",
-      });
-      gsap.from(".about-card", {
-        scrollTrigger: { trigger: ".about-grid", start: "top 80%" },
-        y: 40, opacity: 0, duration: 0.6, stagger: 0.15, ease: "power3.out",
-      });
+      gsap.fromTo(
+        ".about-text",
+        { y: 40, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+          immediateRender: false,
+          scrollTrigger: { trigger: ref.current, start: "top 80%", once: true, invalidateOnRefresh: true },
+        },
+      );
+
+      gsap.fromTo(
+        ".about-card",
+        { y: 40, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+          immediateRender: false,
+          scrollTrigger: { trigger: ref.current, start: "top 75%", once: true, invalidateOnRefresh: true },
+        },
+      );
     }, ref);
     return () => ctx.revert();
   }, []);

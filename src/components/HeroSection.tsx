@@ -1,9 +1,44 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import HeroScene from "./HeroScene";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { gsap } from "@/lib/gsap";
+
+const HeroScene = lazy(() => import("./HeroScene"));
 
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showScene, setShowScene] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const target = containerRef.current;
+    if (!target || reducedMotion) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShowScene(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "250px 0px",
+      },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [reducedMotion]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -17,7 +52,9 @@ const HeroSection = () => {
 
   return (
     <section ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <HeroScene />
+      <Suspense fallback={<div className="absolute inset-0" />}>
+        {showScene && !reducedMotion ? <HeroScene /> : null}
+      </Suspense>
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background pointer-events-none" />

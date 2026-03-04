@@ -42,7 +42,7 @@ function ServerCube({ position }: { position: [number, number, number] }) {
 function NetworkLines() {
   const points = useMemo(() => {
     const pts: THREE.Vector3[] = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 18; i++) {
       pts.push(new THREE.Vector3(
         (Math.random() - 0.5) * 10,
         (Math.random() - 0.5) * 6,
@@ -91,7 +91,7 @@ function Scene() {
 
   return (
     <group ref={groupRef}>
-      <Stars radius={80} depth={60} count={1500} factor={3} saturation={0} fade speed={0.5} />
+      <Stars radius={70} depth={50} count={700} factor={2} saturation={0} fade speed={0.4} />
       <NetworkLines />
       <ServerCube position={[-3, 1.5, -2]} />
       <ServerCube position={[3.5, -1, -1]} />
@@ -105,7 +105,11 @@ function Scene() {
 
 const HeroScene = () => (
   <div className="absolute inset-0">
-    <Canvas camera={{ position: [0, 0, 6], fov: 60 }} dpr={[1, 1.5]}>
+    <Canvas
+      camera={{ position: [0, 0, 6], fov: 60 }}
+      dpr={[1, 1.25]}
+      gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+    >
       <Scene />
     </Canvas>
   </div>

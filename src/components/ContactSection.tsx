@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap";
 import { Github, Linkedin, Mail, Send } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ContactSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -11,10 +8,19 @@ const ContactSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".contact-content", {
-        scrollTrigger: { trigger: ref.current, start: "top 80%" },
-        y: 40, opacity: 0, duration: 0.8, ease: "power3.out",
-      });
+      gsap.fromTo(
+        ".contact-content",
+        { y: 40, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+          immediateRender: false,
+          scrollTrigger: { trigger: ref.current, start: "top 80%", once: true, invalidateOnRefresh: true },
+        },
+      );
     }, ref);
     return () => ctx.revert();
   }, []);

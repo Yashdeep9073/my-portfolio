@@ -1,9 +1,6 @@
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap";
 import { ExternalLink, Github } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -41,10 +38,20 @@ const ProjectsSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".project-card", {
-        scrollTrigger: { trigger: ref.current, start: "top 75%" },
-        y: 60, opacity: 0, duration: 0.7, stagger: 0.15, ease: "power3.out",
-      });
+      gsap.fromTo(
+        ".project-card",
+        { y: 60, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.7,
+          stagger: 0.15,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+          immediateRender: false,
+          scrollTrigger: { trigger: ref.current, start: "top 75%", once: true, invalidateOnRefresh: true },
+        },
+      );
     }, ref);
     return () => ctx.revert();
   }, []);
