@@ -12,6 +12,7 @@ const ContactSection = () => {
   const { toast } = useToast();
   const [form, setForm] = useState<ContactFormValues>({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormValues, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -45,7 +46,7 @@ const ContactSection = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = contactFormSchema.safeParse(form);
 
@@ -65,12 +66,47 @@ const ContactSection = () => {
       return;
     }
 
-    setErrors({});
-    toast({
-      title: "Message ready",
-      description: "Client-side validation passed successfully.",
-    });
-    setForm({ name: "", email: "", message: "" });
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ?? "your-api-key";
+    const payload = new FormData();
+    payload.append("access_key", accessKey);
+    payload.append("name", result.data.name);
+    payload.append("email", result.data.email);
+    payload.append("message", result.data.message);
+
+    try {
+      setIsSubmitting(true);
+      setErrors({});
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: payload,
+      });
+
+      const data = (await response.json()) as { success?: boolean; message?: string };
+
+      if (!response.ok || !data.success) {
+        toast({
+          variant: "destructive",
+          title: "Submission failed",
+          description: data.message ?? "Unable to send your message right now.",
+        });
+        return;
+      }
+
+      toast({
+        title: "Message sent",
+        description: "Thanks for reaching out. I will get back to you soon.",
+      });
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Network error",
+        description: "Please check your connection and try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -140,9 +176,10 @@ const ContactSection = () => {
             </div>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-mono text-sm font-semibold transition-all duration-200 hover:shadow-[0_0_25px_hsl(170_100%_50%/0.4)] hover:scale-105"
             >
-              Send Message <Send className="w-4 h-4" />
+              {isSubmitting ? "Sending..." : "Send Message"} <Send className="w-4 h-4" />
             </button>
           </form>
 
